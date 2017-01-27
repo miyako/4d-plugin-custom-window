@@ -21,6 +21,8 @@ Parameter|Type|Description
 ------------|------|----
 window|IN32|The window reference
 
+**Note**: You need to place an invisible button with ``DRAG WINDOW`` to move the window around.
+
 ###Example
 
 ```
