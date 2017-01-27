@@ -5,7 +5,7 @@ Set window transparent on Mac 64-bit
 
 | carbon | cocoa | win32 | win64 |
 |:------:|:-----:|:---------:|:---------:|
-|🆗|🆗|🚫|🚫|
+|NO|YES|NO|NO
 
 ###Version
 
