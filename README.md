@@ -28,3 +28,5 @@ If (Form event=On Load)
 	SET WINDOW TRANSPARENT (Current form window)
 End if 
 ```
+
+![](image.png)
