@@ -27,7 +27,7 @@ window|LONGINT|The window reference
 
 **Note**: You need to place an invisible button with ``DRAG WINDOW`` to move the window around.
 
-###Example
+### Examples
 
 ```
 $window:=Open form window("Form1";Modal form dialog box)
