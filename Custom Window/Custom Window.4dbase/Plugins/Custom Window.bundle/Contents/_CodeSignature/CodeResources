@@ -90,7 +90,7 @@
 		</data>
 		<key>Resources/Documentation/index.html</key>
 		<data>
-		VCDvslial8ikigYPEYZKgrQE5QY=
+		mQu1hCzp1055eAwjPDrD9kMq6v8=
 		</data>
 		<key>Resources/Documentation/styles/common.css</key>
 		<data>
@@ -100,7 +100,7 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			ixuVCMs5WSB94cTIqvM6Ie3NzMI=
+			g+wXYxZswznbfwjwUjeDW/3LGv8=
 			</data>
 			<key>optional</key>
 			<true/>
@@ -358,11 +358,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			VCDvslial8ikigYPEYZKgrQE5QY=
+			mQu1hCzp1055eAwjPDrD9kMq6v8=
 			</data>
 			<key>hash2</key>
 			<data>
-			gglViHdtHclpkSKGNxgyLaPAJJ1yir0ZmmXYDn/jsEM=
+			TPpk7e3tX0Z/bY6BsZSjA5E6kft7b32eN5oPZrp2/zY=
 			</data>
 		</dict>
 		<key>Resources/Documentation/styles/common.css</key>
@@ -380,11 +380,11 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			ixuVCMs5WSB94cTIqvM6Ie3NzMI=
+			g+wXYxZswznbfwjwUjeDW/3LGv8=
 			</data>
 			<key>hash2</key>
 			<data>
-			HV6BJYuhNUxtB81GnFzFJNM7JIF/d6zuo8KauPd+xh0=
+			9501OtwUx0e+1cY//UIMOUD/A863bpODw+/jT4IniS4=
 			</data>
 			<key>optional</key>
 			<true/>
@@ -426,7 +426,7 @@
 		<dict>
 			<key>cdhash</key>
 			<data>
-			Cch6JjYl5u2SQHMPJ5eU+tJ8iuA=
+			uBpYGnRbQin6y2Ak690idc+cxb8=
 			</data>
 			<key>requirement</key>
 			<string>identifier manifest and anchor apple generic and certificate 1[field.1.2.840.113635.100.6.2.6] /* exists */ and certificate leaf[field.1.2.840.113635.100.6.1.13] /* exists */ and certificate leaf[subject.OU] = Y69CWUC25B</string>

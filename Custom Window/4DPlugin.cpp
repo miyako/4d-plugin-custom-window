@@ -21,6 +21,14 @@ void PluginMain(PA_long32 selector, PA_PluginParameters params)
             case 1 :
                 ___SET_WINDOW_TRANSPARENT(params);
                 break;
+                
+            case 2 :
+                PA_RunInMainProcess/*not ThreadSafe*/((PA_RunInMainProcessProcPtr)___SET_WINDOW_ALPHA, params);
+                break;
+                
+            case 3 :
+                ___Get_window_alpha(params);
+                break;
         }
 	}
 	catch(...)
@@ -69,4 +77,70 @@ void ___SET_WINDOW_TRANSPARENT(PA_PluginParameters params)
     sLONG_PTR *pResult = (sLONG_PTR *)params->fResult;
     PackagePtr pParams = (PackagePtr)params->fParameters;
     SET_WINDOW_TRANSPARENT(pResult, pParams);
+}
+
+void SET_WINDOW_ALPHA(sLONG_PTR *pResult, PackagePtr pParams)
+{
+#if CGFLOAT_IS_DOUBLE
+    C_LONGINT Param1;
+    C_REAL Param2;
+    C_REAL Param3;
+    
+    Param1.fromParamAtIndex(pParams, 1);
+    Param2.fromParamAtIndex(pParams, 2);
+    Param3.fromParamAtIndex(pParams, 3);
+    //https://www.cocoawithlove.com/2008/12/drawing-custom-window-on-mac-os-x.html
+    NSWindow *window = PA_GetWindowRef64(Param1.getIntValue());
+    
+    double _alpha = Param2.getDoubleValue();
+    double _duration = Param3.getDoubleValue();
+    
+    const double alpha = _alpha <= 1 ? _alpha >= 0 ? _alpha : 0 : 1;
+    const double duration = _duration <= 9 ? _duration >= 0 ? _duration : 0 : 9;
+    
+    if(window)
+    {
+        [NSAnimationContext beginGrouping];
+        [[NSAnimationContext currentContext] setDuration:duration];
+        [[window animator] setAlphaValue:alpha];
+        [NSAnimationContext endGrouping];
+        
+//        [NSAnimationContext runAnimationGroup: ^(NSAnimationContext *context) {
+//            [context setDuration: duration];
+//            [window setAlphaValue: alpha];
+//        } completionHandler: nil];        
+    }
+#endif
+}
+
+void ___SET_WINDOW_ALPHA(PA_PluginParameters params)
+{
+    sLONG_PTR *pResult = (sLONG_PTR *)params->fResult;
+    PackagePtr pParams = (PackagePtr)params->fParameters;
+    SET_WINDOW_ALPHA(pResult, pParams);
+}
+
+void Get_window_alpha(sLONG_PTR *pResult, PackagePtr pParams)
+{
+    C_REAL returnValue;
+
+#if CGFLOAT_IS_DOUBLE
+    C_LONGINT Param1;
+    Param1.fromParamAtIndex(pParams, 1);
+    //https://www.cocoawithlove.com/2008/12/drawing-custom-window-on-mac-os-x.html
+    NSWindow *window = PA_GetWindowRef64(Param1.getIntValue());
+    if(window)
+    {
+        returnValue.setDoubleValue([window alphaValue]);
+    }
+#endif
+    
+    returnValue.setReturn(pResult);
+}
+
+void ___Get_window_alpha(PA_PluginParameters params)
+{
+    sLONG_PTR *pResult = (sLONG_PTR *)params->fResult;
+    PackagePtr pParams = (PackagePtr)params->fParameters;
+    Get_window_alpha(pResult, pParams);
 }
