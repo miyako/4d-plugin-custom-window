@@ -8,7 +8,11 @@
  #
  # --------------------------------------------------------------------------------*/
 
+#include "4DPluginAPI.h"
 
+#import <objc/runtime.h>
+#import <AppKit/AppKit.h>
 
 // --- Custom Window
 void SET_WINDOW_TRANSPARENT(sLONG_PTR *pResult, PackagePtr pParams);
+void ___SET_WINDOW_TRANSPARENT(PA_PluginParameters params);

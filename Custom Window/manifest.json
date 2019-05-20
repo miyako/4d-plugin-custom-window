@@ -1,1 +1,11 @@
-﻿{"name":"Custom Window","id":20000,"commands":[{"theme":"Custom Window","syntax":"SET WINDOW TRANSPARENT(&L)"}]}
+{
+    "name": "Custom Window",
+    "id": 20000,
+    "commands": [
+        {
+            "theme": "Custom Window",
+            "syntax": "SET WINDOW TRANSPARENT(&L)",
+            "threadSafe": false
+        }
+    ]
+}

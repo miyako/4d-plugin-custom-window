@@ -8,35 +8,23 @@
  #
  # --------------------------------------------------------------------------------*/
 
-
-#include "4DPluginAPI.h"
 #include "4DPlugin.h"
 
 void PluginMain(PA_long32 selector, PA_PluginParameters params)
 {
 	try
 	{
-		PA_long32 pProcNum = selector;
-		sLONG_PTR *pResult = (sLONG_PTR *)params->fResult;
-		PackagePtr pParams = (PackagePtr)params->fParameters;
-
-		CommandDispatcher(pProcNum, pResult, pParams); 
+        switch(selector)
+        {
+                // --- Custom Window
+                
+            case 1 :
+                ___SET_WINDOW_TRANSPARENT(params);
+                break;
+        }
 	}
 	catch(...)
 	{
-
-	}
-}
-
-void CommandDispatcher (PA_long32 pProcNum, sLONG_PTR *pResult, PackagePtr pParams)
-{
-	switch(pProcNum)
-	{
-// --- Custom Window
-
-		case 1 :
-			SET_WINDOW_TRANSPARENT(pResult, pParams);
-			break;
 
 	}
 }
@@ -48,7 +36,7 @@ NSWindow *PA_GetWindowRef64(int winId)
 	//EX_GET_HWND has been fixed in 15R3 to return a NSWindow* on mac 64bit.
 	//http://forums.4d.fr/Post/EN/15872830/1/17032044
 	
-	PA_ulong32 version = (PA_Get4DVersion() & 0x0000FFFF);
+	PA_ulong32 version = (PA_Get4DVersion/*ThreadSafe*/() & 0x0000FFFF);
 	//	int minor = version & 0x000F;
 	int r = (version & 0x00F0) >> 4;
 	int major = (version & 0xFF00) >> 8;
@@ -63,13 +51,22 @@ NSWindow *PA_GetWindowRef64(int winId)
 void SET_WINDOW_TRANSPARENT(sLONG_PTR *pResult, PackagePtr pParams)
 {
 #if CGFLOAT_IS_DOUBLE
-	C_LONGINT Param1;
-	Param1.fromParamAtIndex(pParams, 1);
-	//https://www.cocoawithlove.com/2008/12/drawing-custom-window-on-mac-os-x.html
-	NSWindow *window = PA_GetWindowRef64(Param1.getIntValue());
-	[window setBackgroundColor:[NSColor clearColor]];
-	[window setOpaque:NO];
-	[window setStyleMask:NSBorderlessWindowMask];
+    C_LONGINT Param1;
+    Param1.fromParamAtIndex(pParams, 1);
+    //https://www.cocoawithlove.com/2008/12/drawing-custom-window-on-mac-os-x.html
+    NSWindow *window = PA_GetWindowRef64(Param1.getIntValue());
+    if(window)
+    {
+        [window setBackgroundColor:[NSColor clearColor]];
+        [window setOpaque:NO];
+        // [window setStyleMask:NSBorderlessWindowMask];
+    }
 #endif
 }
 
+void ___SET_WINDOW_TRANSPARENT(PA_PluginParameters params)
+{
+    sLONG_PTR *pResult = (sLONG_PTR *)params->fResult;
+    PackagePtr pParams = (PackagePtr)params->fParameters;
+    SET_WINDOW_TRANSPARENT(pResult, pParams);
+}
