@@ -47,7 +47,7 @@ window|LONGINT|The window reference
 alpha|REAL|
 duration|REAL|
 
-this command is not thread safe
+``SET WINDOW ALPHA`` is not thread safe
 
 ```
 alpha:=Get window alpha (window)
