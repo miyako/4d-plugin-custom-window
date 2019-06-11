@@ -36,3 +36,24 @@ DIALOG("Form1")
 ```
 
 ![](image.png)
+
+```
+SET WINDOW ALPHA (window;alpha;duration)
+```
+
+Parameter|Type|Description
+------------|------|----
+window|LONGINT|The window reference
+alpha|REAL|
+duration|REAL|
+
+``SET WINDOW ALPHA`` is not thread safe
+
+```
+alpha:=Get window alpha (window)
+```
+
+Parameter|Type|Description
+------------|------|----
+window|LONGINT|The window reference
+alpha|REAL|
