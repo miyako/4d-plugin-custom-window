@@ -13,7 +13,7 @@ Set window transparent on Mac 64-bit (15R3 or later)
 
 ### Releases
 
-[1.1](https://github.com/miyako/4d-plugin-custom-window/releases/tag/1.1)
+[2.1](https://github.com/miyako/4d-plugin-custom-window/releases/tag/2.1)
 
 ### Syntax
 
