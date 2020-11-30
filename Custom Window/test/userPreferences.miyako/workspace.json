@@ -1,0 +1,42 @@
+﻿{
+	"editors": [
+		{
+			"type": "method",
+			"id": 2147483635,
+			"previousTabType": "method",
+			"previousTabID": 2147483636,
+			"codeDescriptor": {
+				"type": 1,
+				"methodName": "TEST"
+			}
+		},
+		{
+			"type": "method",
+			"id": 2147483636,
+			"previousTabType": "method",
+			"previousTabID": 2147483637,
+			"codeDescriptor": {
+				"type": 3,
+				"formName": "Form1",
+				"methodPath": "/SOURCES/Forms/Form1/method.4dm"
+			}
+		},
+		{
+			"type": "method",
+			"id": 2147483637,
+			"previousTabType": "form",
+			"previousTabID": 486,
+			"codeDescriptor": {
+				"type": 2,
+				"formName": "Form1",
+				"objectName": "CLOSE",
+				"methodPath": "/SOURCES/Forms/Form1/ObjectMethods/CLOSE.4dm"
+			}
+		},
+		{
+			"type": "form",
+			"id": 486,
+			"formName": "Form1"
+		}
+	]
+}

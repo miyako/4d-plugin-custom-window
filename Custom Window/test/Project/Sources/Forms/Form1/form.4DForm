@@ -1,0 +1,62 @@
+﻿{
+	"destination": "detailScreen",
+	"rightMargin": 0,
+	"bottomMargin": 0,
+	"markerHeader": 15,
+	"markerBody": 200,
+	"markerBreak": 220,
+	"markerFooter": 240,
+	"events": [
+		"onLoad",
+		"onTimer"
+	],
+	"method": "method.4dm",
+	"pageFormat": {
+		"paperName": "A4",
+		"paperWidth": "842pt",
+		"paperHeight": "595pt"
+	},
+	"pages": [
+		{
+			"objects": {
+				"Oval": {
+					"type": "oval",
+					"top": 0,
+					"left": 0,
+					"width": 300,
+					"height": 200,
+					"fill": "#FFB6C1",
+					"stroke": "#FFFACD",
+					"strokeWidth": 4
+				},
+				"Invisible Button": {
+					"type": "button",
+					"top": 0,
+					"left": 0,
+					"width": 300,
+					"height": 200,
+					"display": false,
+					"method": "ObjectMethods/Invisible Button.4dm",
+					"events": [
+						"onClick"
+					]
+				},
+				"CLOSE": {
+					"type": "button",
+					"top": 162,
+					"left": 98,
+					"width": 104,
+					"height": 22,
+					"text": "CLOSE",
+					"focusable": false,
+					"defaultButton": true,
+					"method": "ObjectMethods/CLOSE.4dm",
+					"events": [
+						"onClick"
+					]
+				}
+			}
+		},
+		null
+	]
+}

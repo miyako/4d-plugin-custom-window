@@ -22,6 +22,10 @@
 #include <stdlib.h>
 #include <string.h>
 
+#if __APPLE__
+#include <CoreGraphics/CoreGraphics.h>
+#endif
+
 // gCall4D stores the address of a callback routine in 4D.
 // this address is given by 4D when it calls the plugin for the first time.
 Call4DProcPtr gCall4D = 0;
@@ -580,7 +584,7 @@ PA_CollectionRef PA_CreateCollection(void)
 
 
 //The PA_Variable should be cleared after use
-PA_Variable PA_GetCollectionElement(PA_CollectionRef collection, long index)
+PA_Variable PA_GetCollectionElement(PA_CollectionRef collection, PA_long32 index)
 {
 	PA_Variable value;
 	EngineBlock eb;
@@ -596,7 +600,7 @@ PA_Variable PA_GetCollectionElement(PA_CollectionRef collection, long index)
 	return value;
 }
 
-void PA_SetCollectionElement(PA_CollectionRef collection, long index, PA_Variable value)
+void PA_SetCollectionElement(PA_CollectionRef collection, PA_long32 index, PA_Variable value)
 {
 	EngineBlock eb;
 	eb.fLongint = index;
@@ -2343,7 +2347,7 @@ PA_Pointer PA_GetPointerParameter( PA_PluginParameters params, short index )
 
 		if ( ptvar->fType == eVK_Pointer )
 		{
-			if (( ptvar->uValue.fPointer == 0 ))	// m.c
+            if ( ptvar->uValue.fPointer == 0 )	// m.c
 				return 0;
 			
 			return *ptvar->uValue.fPointer;
@@ -2882,7 +2886,7 @@ void PA_AcceptDeselect( PA_PluginParameters params, char accept )
 PA_DragAndDropInfo PA_GetDragAndDropInfo( PA_PluginParameters params )
 {
 	PA_Event			*ev;
-	PA_DragAndDropInfo	dropinfo = {0};
+    PA_DragAndDropInfo	dropinfo = {{0}};
 
 	ev = ( (PA_Event**) params->fParameters )[ 0 ];
 	if ( ev->fWhat == eAE_Drop || ev->fWhat == eAE_AllowDrop )
@@ -4056,6 +4060,7 @@ PA_Variable PA_CreateVariable( PA_VariableKind kind )
 		case eVK_ArrayPointer:
 		case eVK_Integer :
 			// not supported
+        default:
 			break;
 	}
 	return variable;
@@ -5893,7 +5898,7 @@ void PA_UnlockDatabase()
 // it will return 0.
 char PA_TryToOpenPrinterSession()
 {
-	EngineBlock eb={0};
+    EngineBlock eb={{0}};
 	eb.fError = eER_NoErr;
 	Call4D( EX_TRY_TO_OPEN_PRINTER_SESSION, &eb );
 	sErrorCode = (PA_ErrorCode)eb.fError;
@@ -5917,7 +5922,7 @@ char PA_TryToOpenPrinterSession()
 // so you should not call yourself PrOpen before printing
 char PA_OpenPrinterSession()
 {
-	EngineBlock eb={0};
+    EngineBlock eb={{0}};
 
 	Call4D( EX_OPEN_PRINTER_SESSION, &eb );
 	sErrorCode = (PA_ErrorCode)eb.fError;
@@ -5930,7 +5935,7 @@ char PA_OpenPrinterSession()
 // need to call PrClose yourself after printing.
 void PA_ClosePrinterSession()
 {
-	EngineBlock eb={0};
+    EngineBlock eb={{0}};
 
 	Call4D( EX_CLOSE_PRINTER_SESSION, &eb );
 	sErrorCode = (PA_ErrorCode)eb.fError;
@@ -7143,7 +7148,7 @@ sLONG_PTR PA_GetHWND( PA_WindowRef windowRef )
 sLONG_PTR	PA_GetMainWindowHWND()
 {
 	sLONG_PTR result = NULL;
-	EngineBlock	eb = {0};
+    EngineBlock	eb = {{0}};
 	Call4D( EX_GET_MAIN_MDI_WINDOW, &eb);
 	sErrorCode = (PA_ErrorCode)eb.fError;
 
@@ -8979,6 +8984,8 @@ void PA_UseQuartzAxis( PA_PluginParameters params,short *outAreaX,short *outArea
 			context = (CGContextRef) props.fMacPort;
 			break;
 		}
+        default:
+            break;
 	}
 	if(context!=NULL)
 	{
@@ -9020,6 +9027,8 @@ void PA_UseQuickdrawAxis( PA_PluginParameters params,short *outAreaX,short *outA
 			context = (CGContextRef) props.fMacPort;
 			break;
 		}
+        default:
+            break;
 	}
 	if(context!=NULL)
 	{
@@ -9066,4 +9075,104 @@ char PA_IsAreaVisible( PA_PluginParameters params )
 		sErrorCode = eER_BadEventCall;
 
 	return visible;
+}
+
+PA_Variable PA_ExecuteCollectionMethod(PA_CollectionRef inCollection, PA_Unichar* funtionName, PA_Variable* parameters, short nbParameters)
+{
+	EngineBlock eb;
+	PA_Variable returned = { 0 };
+	PA_Handle h;
+	PA_Variable** ptvar;
+	PA_long32 i;
+	const unsigned long numberParams = nbParameters + 2;
+
+	h = PA_NewHandle(numberParams * sizeof(PA_Variable*));
+	if (h)
+	{
+		returned.fType = eVK_Undefined;
+		returned.fFiller = 0;
+
+		eb.fPtr1 = PA_LockHandle(h);
+		eb.fPtr2 = &returned;
+
+		ptvar = (PA_Variable**)eb.fPtr1;
+		PA_Variable	col;
+		PA_SetCollectionVariable(&col, inCollection);
+		*ptvar = &col;
+		ptvar++;
+
+		PA_Variable	name;
+		PA_Unistring str = PA_CreateUnistring(funtionName);
+		PA_SetStringVariable(&name, &str);
+		*ptvar = &name;
+		ptvar++;
+
+		if (parameters != NULL)
+		{
+			for (i = 2; i < numberParams; i++, ptvar++, parameters++)
+				*ptvar = parameters;
+		}
+
+		eb.fError = eER_NoErr;
+		eb.fParam2 = numberParams;
+
+		Call4D(EX_CALL_OBJ_FUNCTION, &eb);
+
+		PA_UnlockHandle(h);
+		PA_DisposeHandle(h);
+
+		sErrorCode = (PA_ErrorCode)eb.fError;
+	}
+
+	return returned;
+}
+
+PA_Variable PA_ExecuteObjectMethod(PA_ObjectRef inObject, PA_Unichar* funtionName, PA_Variable* parameters, short nbParameters)
+{
+	EngineBlock eb;
+	PA_Variable returned = { 0 };
+	PA_Handle h;
+	PA_Variable** ptvar;
+	PA_long32 i;
+	const unsigned long numberParams = nbParameters + 2;
+
+	h = PA_NewHandle(numberParams * sizeof(PA_Variable*));
+	if (h)
+	{
+		returned.fType = eVK_Undefined;
+		returned.fFiller = 0;
+
+		eb.fPtr1 = PA_LockHandle(h);
+		eb.fPtr2 = &returned;
+
+		ptvar = (PA_Variable**)eb.fPtr1;
+		PA_Variable	col;
+		PA_SetObjectVariable(&col, inObject);
+		*ptvar = &col;
+		ptvar++;
+
+		PA_Variable	name;
+		PA_Unistring str = PA_CreateUnistring(funtionName);
+		PA_SetStringVariable(&name, &str);
+		*ptvar = &name;
+		ptvar++;
+
+		if (parameters != NULL)
+		{
+			for (i = 2; i < numberParams; i++, ptvar++, parameters++)
+				*ptvar = parameters;
+		}
+
+		eb.fError = eER_NoErr;
+		eb.fParam2 = numberParams;
+
+		Call4D(EX_CALL_OBJ_FUNCTION, &eb);
+
+		PA_UnlockHandle(h);
+		PA_DisposeHandle(h);
+
+		sErrorCode = (PA_ErrorCode)eb.fError;
+	}
+
+	return returned;
 }

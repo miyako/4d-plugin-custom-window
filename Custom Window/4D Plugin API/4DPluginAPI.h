@@ -20,68 +20,9 @@
 
 #include "Flags.h"
 #include "PublicTypes.h"
-
-#include <string>
-#include <vector>
-#include <map>
-
-#include "C_INTEGER.h"
-#include "C_LONGINT.h"
-#include "C_TIME.h"
-#include "C_DATE.h"
-#include "C_REAL.h"
-#include "C_TEXT.h"
-#include "C_BLOB.h"
-#include "C_POINTER.h"
-#include "C_PICTURE.h"
-
-#include "ARRAY_TEXT.h"
-#include "ARRAY_BOOLEAN.h"
-#include "ARRAY_INTEGER.h"
-#include "ARRAY_REAL.h"
-#include "ARRAY_LONGINT.h"
-#include "ARRAY_TIME.h"
-#include "ARRAY_DATE.h"
-
-//some external libraries assume first load; include this file after them
-#if VERSIONWIN
-#ifndef _WINDOWS_
-//need to load winsock2 before windows
-//BSD wrappers
-#define close closesocket
-#define TickCount GetTickCount
-#define getpid GetCurrentProcessId
-#include <winsock2.h>
-
-#include <ws2tcpip.h>
-#pragma comment(lib, "ws2_32.lib")
-
-#include <windows.h>
-#include <iphlpapi.h>
-#include <icmpapi.h>
-
-#pragma comment(lib, "iphlpapi.lib")
-#include <time.h>
-#include <mmsystem.h>
-#pragma comment(lib, "winmm.lib")
-#endif
-#else
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <netinet/ip.h>
-#include <netinet/ip_icmp.h>
-#include <netdb.h>
-#include <arpa/inet.h>
-#define SOCKET int
-#define SOCKET_ERROR (-1)
-#define INVALID_SOCKET (SOCKET)(~0)
-#endif
-
 #ifndef NULL
 #define NULL 0
 #endif
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -92,7 +33,7 @@ extern "C" {
 // interface that must be provided by user
 // ---------------------------------------------------------------
 void PluginMain( PA_long32 selector, PA_PluginParameters params );
-void CommandDispatcher (PA_long32 pProcNum, sLONG_PTR *pResult, PackagePtr pParams);
+
 
 // ---------------------------------------------------------------
 // Returns the last error returned by any call to the API
@@ -185,8 +126,8 @@ PA_Unistring     PA_JsonStringify( PA_Variable value, char prettyPrint );
 // ---------------------------------------------------------------
 //The collections are manipulated by reference
 PA_CollectionRef PA_CreateCollection(void);
-PA_Variable  	 PA_GetCollectionElement(PA_CollectionRef collection, long index);
-void		 	 PA_SetCollectionElement(PA_CollectionRef collection, long index, PA_Variable value);
+PA_Variable  	 PA_GetCollectionElement(PA_CollectionRef collection, PA_long32 index);
+void		 	 PA_SetCollectionElement(PA_CollectionRef collection, PA_long32 index, PA_Variable value);
 void             PA_DisposeCollection(PA_CollectionRef collection);
 PA_long32		 PA_GetCollectionLength(PA_CollectionRef collection);
 
@@ -1080,6 +1021,10 @@ void         PA_Dial4DAllowXResize         ( PA_Dial4D dialog, char allowResize 
 void         PA_Dial4DAllowYResize         ( PA_Dial4D dialog, char allowResize );
 void         PA_Dial4DGetWindowMinMaxInfo  ( PA_Dial4D dialog, PA_long32* minXresize, PA_long32* maxXresize, PA_long32* minYresize, PA_long32* maxYresize );
 void         PA_Dial4DSetWindowSize        ( PA_Dial4D dialog, PA_long32 width, PA_long32 height );
+
+PA_Variable PA_ExecuteCollectionMethod(PA_CollectionRef inCollection, PA_Unichar* funtionName, PA_Variable* parameters, short nbParameters);
+PA_Variable PA_ExecuteObjectMethod(PA_ObjectRef inObject, PA_Unichar* funtionName, PA_Variable* parameters, short nbParameters);
+
 
 #ifdef __cplusplus
 }
