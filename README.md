@@ -1,3 +1,7 @@
+![platform](https://img.shields.io/static/v1?label=platform&message=osx-64&color=blue)
+[![license](https://img.shields.io/github/license/miyako/4d-plugin-custom-window)](LICENSE)
+![downloads](https://img.shields.io/github/downloads/miyako/4d-plugin-custom-window/total)
+
 # 4d-plugin-custom-window
 Set window transparent on Mac
 
