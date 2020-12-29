@@ -1,10 +1,12 @@
 ![platform](https://img.shields.io/static/v1?label=platform&message=osx-64&color=blue)
-![version](https://img.shields.io/badge/version-17%2B-3E8B93)
+![version](https://img.shields.io/badge/version-16%2B-8331AE)
 [![license](https://img.shields.io/github/license/miyako/4d-plugin-custom-window)](LICENSE)
 ![downloads](https://img.shields.io/github/downloads/miyako/4d-plugin-custom-window/total)
 
 # 4d-plugin-custom-window
 Set window transparent on Mac
+
+To use on v16 or v17, move manifest.json to contents.
 
 ### Syntax
 
