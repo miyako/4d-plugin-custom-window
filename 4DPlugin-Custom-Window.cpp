@@ -28,7 +28,6 @@ void PluginMain(PA_long32 selector, PA_PluginParameters params) {
                 break;
             case 3 :
                 PA_RunInMainProcess((PA_RunInMainProcessProcPtr)Get_window_alpha, params);
-                Get_window_alpha(params);
                 break;
                 
         }
