@@ -11,6 +11,8 @@ TRAILER = "Co-authored-by: Copilot App <223556219+Copilot@users.noreply.github.c
 
 
 def run(cwd, *args):
+    if Path(cwd).name.endswith(".git") and args[0] == "git":
+        args = ("git", "--git-dir", str(cwd), *args[1:])
     return subprocess.check_output(args, cwd=cwd, text=True).strip()
 
 
