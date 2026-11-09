@@ -15,6 +15,91 @@ Custom Window lets you make a 4D form window transparent and fade its opacity in
 
 **Platforms:** macOS (Intel and Apple Silicon) only. No Windows support.
 
+## Maintainer workflows
+
+**Bump version** and **Build** are independent manual Actions workflows. Select the
+source branch/ref with GitHub's built-in selector. Bump has only the patch/minor/major
+choice and requires a branch; **Build has zero custom inputs** and accepts any
+selected ref. Every checkout uses the immutable dispatch `github.sha`. Neither
+workflow runs on push or pull request. Publishing a migration branch/PR does not
+compile or sign anything.
+
+The source authority is the coordinated `MARKETING_VERSION` and
+`CURRENT_PROJECT_VERSION` contract in the latest original Bump header
+(`d50cef9572123ee31fdf1e43e05ff2afd9332db3`), which superseded the earlier
+marketing-only header (`4ccb3dbf5d8968be572eea36b54fbc3a1af2ee4c`). Its implementation
+accidentally validated/wrote only the marketing-first key. At migration intake,
+marketing and source `Info.plist` agree on **2.1.5**; that version is not incremented.
+Only stale source current settings (2.1.1) and the two display-version fields in
+source `English.lproj/InfoPlist.strings` (2.1.0) are repaired to 2.1.5.
+
+Future bumps require canonical `X.Y.Z` and consistency across all six settings
+for each key, source plist and source localization. Literals are co-bumped;
+supported Xcode references are preserved and resolved, never flattened.
+Optional `CFBundleVersion` stays absent when absent. Duplicate/missing/invalid
+fields fail before writing. Rewrites preserve BOM, each individual CR/LF/CRLF,
+permissions and unrelated bytes. Prebuilt bundles/localizations, dependencies,
+Windows payload, 4D data/schema counters and manifest command IDs are not source
+version inputs or edits.
+
+Bump requires a clean checkout and exact selected remote branch SHA. It produces
+one nonempty source-only commit with one direct parent and the Copilot co-author
+trailer. The executable pre-push guard is mandatory both initially and immediately
+before pushing: it checks Git's advertised old SHA/ref, literal new SHA/HEAD and
+exactly one update, rejecting advance/rewind/delete/same-result races. The explicit
+nonforce branch push disables followed tags with both `push.followTags=false` and
+`--no-follow-tags`. Bump creates no tag/release and dispatches no build. If the branch
+moves, inspect the retained local commit and dispatch afresh from the new branch
+head; do not force-push or amend.
+
+Build derives `vX.Y.Z` and `Custom Window-X.Y.Z.zip`/`.dmg` from selected source.
+A constant cross-branch publication concurrency group queues builds without
+cancelling. Authenticated, fully paginated release lists (including drafts) and
+an exact remote-tag absence check run before native work and again **after**
+build, sign, strict verification, both successful `Accepted` notary submissions
+and stapling. API/auth/network/404/malformed responses fail closed.
+
+The original pipeline is macOS-only despite its old Windows comments. It retains
+the `Default` target configuration, `arm64 x86_64`, original **10.13** workflow
+deployment override, Cocoa/resource phases, signing commands and secret names.
+It explicitly resolves the potential `Default` sibling output to `test/Plugins`,
+invalidating only generated binary/plist/localization/signature and intermediates.
+It never removes the whole bundle, resource tree, Windows payload or dependencies.
+Required architecture tokens are exact; extra slices are not forbidden.
+Built plist/localization metadata is checked (XML/binary plist, normal strings
+or UTF-16 BOM strings), including optional-key absence. The real resource
+destinations `Contents/Resources/manifest.json` and `constants.xlf` must match
+their sources.
+
+### Publication recovery
+
+Publication is create-only: separate `POST git/refs` at the selected SHA, exact
+remote verification, `POST` of a **new public, non-prerelease** release with explicit
+tag/name/target/body/flags, then separate uploads to its returned release ID.
+The original workflow had no release body or generated notes; the body remains
+empty. No reuse, update, PATCH, delete, clobber, rollback or automatic retry occurs.
+
+On any failure, **all partial remote state is retained**. Read the failed step's
+error and recorded tag/release ID; inspect the exact tag SHA, draft/public release
+and uploaded assets before deciding what to do. A tag-only failure, release-create
+failure or first/second upload failure blocks rerunning the same version. Never
+blindly rerun, delete/retarget tags, overwrite assets or amend the source commit.
+Recovery requires a maintainer decision: preserve the evidence and intentionally
+complete retained state outside this create-only workflow, or use a newly bumped
+version. The workflow never cleans up published state for you.
+
+### Offline validation
+
+Run `actionlint` and `PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s .github/tests -v`.
+The full suite is source-derived and also runs after a genuine guarded helper
+bump in a disposable Git/bare-origin fixture: after committing the migration, run
+`PYTHONDONTWRITEBYTECODE=1 python3 .github/tests/validate_bumped.py`.
+Tests cover real Git races,
+pagination/API errors, create payloads, retained partial state, byte preservation,
+inline duplicates, and extracted workflow shell blocks with a closed PATH of
+native stubs. There are no PowerShell blocks in this macOS-only pipeline.
+These checks do **not** constitute native compilation, signing or notarization proof.
+
 ---
 
 ## Requirements & platform notes
